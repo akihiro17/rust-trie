@@ -1,49 +1,38 @@
+use std::time::Instant;
+
+use rand::Rng;
+use random_word::Lang;
+
 mod trie;
 fn main() {
-    println!("Hello, world!");
-
     let mut root = trie::Root::new_empty();
 
-    for _ in 0..15 {
-        root.add("be");
+    let mut rng = rand::thread_rng();
+    for _ in 0..10000000 {
+        let word = random_word::gen(Lang::En);
+        // println!("word: {}", word);
+        root.add(word, rng.gen_range(0..10000));
     }
-    for _ in 0..20 {
-        root.add("bee");
-    }
-    for _ in 0..29 {
-        root.add("bet");
-    }
-    for _ in 0..14 {
-        root.add("buy");
-    }
-    for _ in 0..10 {
-        root.add("beer");
-    }
-    for _ in 0..35 {
-        root.add("best");
-    }
-    for _ in 0..11 {
-        root.add("win");
-    }
-
-    assert_eq!(root.find("be"), 15);
-    assert_eq!(root.find("bee"), 20);
-    assert_eq!(root.find("beer"), 10);
-    assert_eq!(root.find("best"), 35);
-    assert_eq!(root.find("b"), 0);
-    assert_eq!(root.find("bes"), 0);
-
+    let start = Instant::now();
     root.update_top();
+    let end = start.elapsed();
 
-    if let Some(top) = root.get_top("be") {
-        for (r, t) in top {
-            println!("{} {}", t, r.0);
+    println!(
+        "process time: {}.{:03}",
+        end.as_secs(),
+        end.subsec_nanos() / 1_000_000
+    );
+
+    if let Some(top_list) = root.get_top("twi") {
+        println!("auto complete list for `twi`");
+        for (r, t) in top_list {
+            println!("{}: {}", t, r.0);
         }
     }
-    println!("---");
-    if let Some(top) = root.get_top("b") {
-        for (r, t) in top {
-            println!("{} {}", t, r.0);
+    if let Some(top_list) = root.get_top("bug") {
+        println!("auto complete list for `bug`");
+        for (r, t) in top_list {
+            println!("{}: {}", t, r.0);
         }
     }
 }

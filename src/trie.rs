@@ -45,7 +45,7 @@ impl Root {
         }
     }
 
-    pub fn add(&mut self, word: &str) {
+    pub fn add(&mut self, word: &str, count: u64) {
         let mut len = word.len();
         let value = word.to_string();
 
@@ -59,7 +59,7 @@ impl Root {
                 let tmp = n.next.entry(c).or_insert(Node::new(c));
                 n = tmp;
                 if i == len - 1 {
-                    n.count += 1;
+                    n.count += count;
                     n.value = Some(value.clone());
                 }
             }
@@ -115,27 +115,13 @@ mod tests {
     fn root() -> trie::Root {
         let mut root = trie::Root::new_empty();
 
-        for _ in 0..15 {
-            root.add("be");
-        }
-        for _ in 0..20 {
-            root.add("bee");
-        }
-        for _ in 0..29 {
-            root.add("bet");
-        }
-        for _ in 0..14 {
-            root.add("buy");
-        }
-        for _ in 0..10 {
-            root.add("beer");
-        }
-        for _ in 0..35 {
-            root.add("best");
-        }
-        for _ in 0..11 {
-            root.add("win");
-        }
+        root.add("be", 15);
+        root.add("bee", 20);
+        root.add("bet", 29);
+        root.add("buy", 14);
+        root.add("beer", 10);
+        root.add("best", 35);
+        root.add("win", 11);
 
         root
     }
